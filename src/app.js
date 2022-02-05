@@ -6,7 +6,9 @@ dotenv.config();
 
 const app = express();
 
-const { HOST: hostname = '127.0.0.1', PORT: port = 3000 } = process.env;
+const host = process.env.HOST || '127.0.0.1';
+const port = process.env.PORT || 3000;
+
 
 
 app.get('/', async (req, res) => {
@@ -18,5 +20,5 @@ app.get('/', async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.info(`Server running at http://${hostname}:${port}/`);
+  console.info(`Server running at http://${host}:${port}/`);
 });
