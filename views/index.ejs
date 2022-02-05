@@ -1,0 +1,10 @@
+<%- include('header') -%>
+
+<p>
+  <%
+  for(var i = 0 ; i < list.length ; i++) { %>
+  <ul>
+    <li><a href= /events/?slug=<%= list[i].slug %>><%= list[i].name %></a></li>
+  </ul>
+<% } %></p>
+<%- include('footer') -%>
