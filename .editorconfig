@@ -1,0 +1,20 @@
+samræmir skrár illi stýrikerfa
+# í ritli ætti að sækja plugin sem passar upp á þetta, t.d. EditorConfig for VS Code.
+
+root = true
+
+[*]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# vscode specific, annars mun prettier formata með dounle quates
+quate_type = single
+
+[*.md]
+trim_trailing_whitespace = false
+
+
