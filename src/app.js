@@ -7,7 +7,6 @@ dotenv.config();
 const app = express();
 
 const {
-  HOST: hostname = '127.0.0.1',
   PORT: port = 3000,
 } = process.env;
 
@@ -22,5 +21,5 @@ app.get('/', async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.info(`Server running at http://${hostname}:${port}/`);
+  console.info(`Server running at http://localhost:${port}/`);
 });
