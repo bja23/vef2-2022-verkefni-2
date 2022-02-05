@@ -1,0 +1,40 @@
+{
+    "name": "timi2",
+    "version": "1.0.0",
+    "description": "",
+    "type": "module",
+    "main": "index.js",
+    "scripts": {
+        "build": "node ./src/build.js && cpy public dist",
+        "start": "node ./src/app.js",
+        "test": "NODE_OPTIONS='--experimental-vm-modules' jest ./*.test.js",
+        "prettier": "prettier --write .",
+        "lint": "concurrently npm:lint:*",
+        "lint:eslint": "eslint ./src/**/*.js",
+        "lint:stylelint": "stylelint ./public/styles.css",
+        "dev": "browser-sync start --serveStatic ./dist --server --files ./public/styles.css ./dist/*.html"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "browser-sync": "^2.27.7",
+        "concurrently": "^7.0.0",
+        "eslint": "^8.7.0",
+        "eslint-config-airbnb-base": "^15.0.0",
+        "eslint-config-prettier": "^8.3.0",
+        "eslint-plugin-import": "^2.25.4",
+        "jest": "^27.4.7",
+        "prettier": "^2.5.1",
+        "stylelint": "^14.3.0",
+        "stylelint-config-sass-guidelines": "^9.0.1",
+        "stylelint-config-standard": "^24.0.0"
+    },
+    "dependencies": {
+        "cpy-cli": "^3.1.1",
+        "dotenv": "^14.3.2",
+        "express": "^4.17.2",
+        "gray-matter": "^4.0.3",
+        "marked": "^4.0.10"
+    }
+}
