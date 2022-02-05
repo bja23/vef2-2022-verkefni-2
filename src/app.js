@@ -16,7 +16,15 @@ app.get('/', async (req, res) => {
 
   console.info('request to /');
   res.send(
-    `Hello World! The time is now ${new Date().toISOString()}`
+    `birtir forsíðu með skráðum viðburðum, ef engir birta skilaboð um það ${new Date().toISOString()}`
+  );
+});
+
+app.get('/:slug', async (req, res) => {
+
+  console.info('request to /:slug');
+  res.send(
+    `birtir viðburð með þeim slug, skráða aðila og skráningarform, ef engin 404 villusíðu ${new Date().toISOString()}`
   );
 });
 
