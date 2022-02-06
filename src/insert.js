@@ -28,13 +28,14 @@ try {
 
 try {
 
-  const q = `INSERT INTO registration (name,comment,created )
-  VALUES('blabla', 'test3-event','2017-05-1');`
-  let result = await client.query(q);
+  const query = `INSERT INTO registration (name,comment,event,created )
+  VALUES($2, 'test3-event',$1,'2017-05-01')`;
+  const values = [number,sqlname];
+  let result = await client.query(query, values);
 
 
 } catch (e) {
-  console.error('Error selecting', e);
+  console.error('Error inserting', e);
 } finally {
   client.release();
 }

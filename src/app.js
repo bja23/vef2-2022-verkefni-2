@@ -5,7 +5,7 @@ import express from 'express';
 import pg from 'pg';
 import { readdir } from 'fs/promises';
 
-import { selectSQL } from "./select.js";
+import { selectSQL,selectSQLr } from "./select.js";
 import { insertSQL } from "./insert.js";
 
 dotenv.config();
@@ -28,7 +28,6 @@ app.get('/', async (req, res) => {
   console.info('request to /');
 
   const list = await selectSQL(nodeEnv,connectionString,0,'test');
-
   res.render('index',{
     title: 'heimasida',
     list: list
@@ -36,48 +35,37 @@ app.get('/', async (req, res) => {
 });
 
 app.get('/events', async (req, res) => {
-
-  const list = await selectSQL(nodeEnv,connectionString,1,req.query.slug);
-  console.log(list);
+  const list = await selectSQL(nodeEnv,connectionString,1,req.query.id);
+  const list3 = await selectSQLr(nodeEnv,connectionString,req.query.id,req.query.slug);
 
   res.render('event',{
     title: 'þarfadbreyta',
-    list: list
+    list: list,
+    list3: list3
   });
 });
 
 app.use(express.urlencoded({ extended: true }));
-/*
-app.use((req, res, next) => {
-  const chunks = [];
-  req.on('data', (c) => chunks.push(c));
-  req.on('end', () => {
-    req.body = chunks.join();
-    next();
-  });
-});
-*/
 
 app.post('/events', async (req, res) => {
   // fa inn fra form
+  const data = req.body;
 
   // insert into db
-  const list2 = await insertSQL(nodeEnv,connectionString,1,req.query.slug);
-  console.log('TEST: ', list2);
+  const list2 = await insertSQL(nodeEnv,connectionString,data.id,data.name);
+
 
   // kalla a db
 
   // render með nyju info
-  const data = req.body;
 
-  console.log(req.body);
-  console.log(data.slug);
-
-  const list = await selectSQL(nodeEnv,connectionString,1,data.slug);
+  const list = await selectSQL(nodeEnv,connectionString,1,data.id);
+  const list3 = await selectSQLr(nodeEnv,connectionString,data.id,data.name);
 
   res.render('event',{
     title: 'þarfadbreyta',
-    list: list
+    list: list,
+    list3: list3
   });
 });
 

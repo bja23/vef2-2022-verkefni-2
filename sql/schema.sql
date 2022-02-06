@@ -11,5 +11,6 @@ CREATE TABLE registration (
   id SERIAL PRIMARY KEY,
   name VARCHAR(64) not null,
   comment VARCHAR(255),
+  event INT,
   created DATE
 );
