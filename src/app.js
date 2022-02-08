@@ -69,6 +69,20 @@ app.post('/events', async (req, res) => {
   });
 });
 
+app.get('/admin/login', async (req, res) => {
+  res.render('login',{
+    title: "Login"
+  });
+});
+
+app.post('/admin', async (req, res) => {
+
+  res.render('login',{
+    title: "Admin"
+  });
+});
+
+
 
 
 app.listen(port, () => {
