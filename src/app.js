@@ -10,6 +10,7 @@ import { insertSQL } from "./insert.js";
 
 dotenv.config();
 
+
 const app = express();
 
 const path = dirname(fileURLToPath(import.meta.url));
@@ -22,6 +23,8 @@ const {
   DATABASE_URL: connectionString,
   NODE_ENV: nodeEnv = 'development',
 } = process.env;
+
+console.log(connectionString);
 
 app.get('/', async (req, res) => {
 
