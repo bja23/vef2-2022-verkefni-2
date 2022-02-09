@@ -10,6 +10,8 @@ import { readdir } from 'fs/promises';
 import { selectSQL,selectSQLr } from "./select.js";
 import { insertSQL } from "./insert.js";
 import { comparePasswords, findById, findByUsername } from './lib/users.js';
+import { createEvent, updateEventName } from './lib/db.js';
+import { ensureLoggedIn } from './routes/admin-routes.js';
 
 dotenv.config();
 
@@ -60,6 +62,8 @@ async function strat(username, password, done) {
     return done(err);
   }
 }
+
+
 
 passport.use(
   new Strategy(
@@ -134,7 +138,7 @@ app.post('/events', async (req, res) => {
 
 app.get('/admin/login', (req, res) => {
   if (req.isAuthenticated()) {
-    return res.redirect('/');
+    return res.redirect('/admin');
   }
 
   let message = '';
@@ -147,7 +151,7 @@ app.get('/admin/login', (req, res) => {
   }
 
   return res.send(`
-    <form method="post" action="/admin">
+    <form method="post" action="/login">
       <label>Notendanafn: <input type="text" name="username"></label>
       <label>Lykilorð: <input type="password" name="password"></label>
       <button>Innskrá</button>
@@ -156,15 +160,86 @@ app.get('/admin/login', (req, res) => {
   `);
 });
 
-app.post('/admin',
+app.post('/login',
+  passport.authenticate('local', {
+    failureMessage: 'Notandanafn eða lykilorð vitlaust.',
+    failureRedirect: '/login',
+  }),
+  async (req, res) => {
+
+    const list = await selectSQL(nodeEnv,connectionString,0,'test');
+    console.log(list);
+
+    res.render('admin',{
+      title: 'admin',
+      list: list,
+    });
+  }
+);
+
+
+app.get('/admin',
   passport.authenticate('local', {
     failureMessage: 'Notandanafn eða lykilorð vitlaust.',
     failureRedirect: '/admin/login',
   }),
-  (req, res) => {
-    res.redirect('/admin');
+  async (req, res) => {
+
+    const list = await selectSQL(nodeEnv,connectionString,0,'test');
+
+    res.render('admin',{
+      title: 'admin',
+      list: list,
+    });
   }
 );
+
+app.post('/admin', ensureLoggedIn,
+
+  async (req, res) => {
+    const name = req.body.name;
+    const description = req.body.description;
+    console.log("info: ", name, description);
+
+    const inst = await createEvent(name, description);
+
+    const list = await selectSQL(nodeEnv,connectionString,0,'test');
+
+    res.render('admin',{
+      title: 'admin',
+      list: list,
+    });
+  });
+
+  app.get('/admin/events', ensureLoggedIn,
+    async (req, res) => {
+    const list = await selectSQL(nodeEnv,connectionString,1,req.query.id);
+    const list3 = await selectSQLr(nodeEnv,connectionString,req.query.id,req.query.slug);
+
+    res.render('adminUpdateEvent',{
+      title: 'þarfadbreyta',
+      list: list,
+      list3: list3
+    });
+  });
+
+  app.post('/admin/event', async (req, res) => {
+    // fa inn fra form
+    const data = req.body;
+    // insert into db
+    const list2 = await updateEventName(data.name,data.description,data.id);
+    console.log("changed to: ", data.name, data.description, data.id);
+
+    const list = await selectSQL(nodeEnv,connectionString,1,data.id);
+    const list3 = await selectSQLr(nodeEnv,connectionString,data.id,data.name);
+
+    res.render('adminUpdateEvent',{
+      title: 'þarfadbreyta',
+      list: list,
+      list3: list3
+    });
+  });
+
 
 
 

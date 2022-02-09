@@ -44,24 +44,29 @@ export async function end() {
   await pool.end();
 }
 
-export async function createComment({ name, email, nationalId, comment }) {
+export async function createEvent(name, description ) {
   const q = `
     INSERT INTO
-      comments(name, email, nationalId, comment)
+      events(name, slug, description, created, updated)
     VALUES
-      ($1, $2, $3, $4)
+      ($1, $2, $3, $4, $5)
     RETURNING *`;
-  const values = [name, email, nationalId, comment];
+  const values = [name, name, description, new Date(), new Date()];
+  console.log(values);
 
   const result = await query(q, values);
 
   return result !== null;
 }
 
-export async function listComments() {
-  const q = 'SELECT * FROM comments';
 
-  const result = await query(q);
+export async function updateEventName(name,description,id) {
+  const q = `UPDATE
+              events
+            SET name = $1, description = $2, updated = $3 WHERE id = $4`;
+  const values = [name, description, new Date(), id];
+
+  const result = await query(q, values);
 
   if (result) {
     return result.rows;

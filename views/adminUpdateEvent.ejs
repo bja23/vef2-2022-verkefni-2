@@ -1,0 +1,21 @@
+<%- include('header') -%>
+
+<p>
+  <%
+  for(var i = 0 ; i < list.length ; i++) { %>
+  <ul>
+    <li><%= list[i].name%></li>
+    <li><%= list[i].descripion%></li>
+    <li><%= list[i].created%></li>
+    <li><%= list[i].updated%></li>
+  </ul>
+  <p>
+    <%
+    for(var i = 0 ; i < list3.length ; i++) { %>
+    <ul>
+      <li><%= list3[i].name %></li>
+    </ul>
+  <% } %></p>
+<% } %></p>
+<%- include('adminUpdateEventForm') -%>
+<%- include('footer') -%>
