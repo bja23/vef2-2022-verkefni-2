@@ -3,7 +3,6 @@ import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import express from 'express';
 import { readdir } from 'fs/promises';
-
 import { selectSQL,selectSQLr } from "./select.js";
 import { insertSQL } from "./insert.js";
 
