@@ -2,7 +2,6 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import express from 'express';
-import pg from 'pg';
 import { readdir } from 'fs/promises';
 
 import { selectSQL,selectSQLr } from "./select.js";
@@ -24,7 +23,6 @@ const {
   NODE_ENV: nodeEnv = 'development',
 } = process.env;
 
-console.log(connectionString);
 
 app.get('/', async (req, res) => {
 
