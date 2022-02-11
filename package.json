@@ -6,6 +6,7 @@
     "main": "app.js",
     "scripts": {
         "start": "node ./src/app.js",
+        "test": "NODE_ENV=test NODE_OPTIONS='--experimental-vm-modules' dotenv -e .env.test -- jest ./*.test.js",
         "dev": "nodemon ./src/app.js"
     },
     "keywords": [],
