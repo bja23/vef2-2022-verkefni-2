@@ -223,7 +223,7 @@ export const postEvent =  async (req, res) => {
   const data = req.body;
 
   // insert into db
-  const list2 = await insertSQL(nodeEnv,connectionString,data.id,data.name);
+  const list2 = await insertSQL(nodeEnv,connectionString,data.id,data.name, data.comment);
 
 
   const list = await selectSQL(nodeEnv,connectionString,1,data.id);

@@ -52,6 +52,13 @@ ul li {
   padding: 1rem;
 }
 
+ol {
+  border: 2px solid #000;
+  border-radius: 10px;
+  margin: 1rem;
+  padding: 1rem;
+
+
 .DataList {
   font-size: 2rem;
   word-break: break-all;
@@ -60,4 +67,16 @@ ul li {
 .BackButton {
   font-size: 2rem;
   margin-left: 25%;
+}
+
+.button {
+  background-color: #555555;/* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: auto;
 }

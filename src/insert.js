@@ -5,7 +5,7 @@ import express from 'express';
 import pg from 'pg';
 import { readdir } from 'fs/promises';
 
-export async function insertSQL(nodeEnv, connectionString,number,sqlname){
+export async function insertSQL(nodeEnv, connectionString,number,sqlname, comment){
 
 const ssl = nodeEnv !== 'development' ? {rejectUnauthorized: false } : false;
 
@@ -30,8 +30,8 @@ try {
 
 
   const query = `INSERT INTO registration (name,comment,event,created )
-  VALUES($2, 'test3-event',$1,'2017-05-01')`;
-  const values = [number,sqlname];
+  VALUES($2, $3,$1,$4)`;
+  const values = [number,sqlname, comment, new Date()];
   let result = await client.query(query, values);
 
 
