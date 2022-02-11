@@ -21,8 +21,11 @@ const app = express();
 
 app.use(express.urlencoded({ extended: true }));
 
+
+
 const path = dirname(fileURLToPath(import.meta.url));
 
+app.use(express.static(join(path, '../public')));
 app.set('views', join(path, '../views'));
 app.set('view engine', 'ejs');
 

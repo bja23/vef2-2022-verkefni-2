@@ -3,18 +3,20 @@
 <p>
   <%
   for(var i = 0 ; i < list.length ; i++) { %>
+    Skráning í viðburð
   <ul>
-    <li><%= list[i].name%></li>
-    <li><%= list[i].slug%></li>
-    <li><%= list[i].descripion%></li>
-    <li><%= list[i].created%></li>
-    <li><%= list[i].updated%></li>
+    <li>Nafn: <%= list[i].name%></li>
+    <li>Slug: <%= list[i].slug%></li>
+    <li>Lýsing: <%= list[i].descripion%></li>
+    <li>Búið til: <%= list[i].created%></li>
+    <li>síðast breytt: <%= list[i].updated%></li>
   </ul>
   <p>
+    Eftirfarandi eru skráðir:
     <%
     for(var i = 0 ; i < list3.length ; i++) { %>
     <ul>
-      <li><%= list3[i].name %></li>
+      <li><%= list3[i].name %>, <%= list3[i].comment %></li>
     </ul>
   <% } %></p>
 <% } %></p>

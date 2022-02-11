@@ -1,11 +1,11 @@
-INSERT INTO events (name,slug,created,updated )
-VALUES('Vefforritun 2', 'vefforritun-2','2022-01-1', '2022-01-1');
+INSERT INTO events (name,slug,description,created,updated )
+VALUES('Vefforritun 2', 'vefforritun-2','Annar áfangi í forritun','2022-01-1', '2022-01-1');
 
-INSERT INTO events (name,slug,created,updated )
-VALUES('Hugbúnaðarverkefni 2', 'hugbunadarverkefni-2','2022-01-1', '2022-01-1');
+INSERT INTO events (name,slug,description,created,updated )
+VALUES('Hugbúnaðarverkefni 2', 'hugbunadarverkefni-2','Annar áfangi í hugbúnaðarverkefni','2022-01-1', '2022-01-1');
 
-INSERT INTO events (name,slug,created,updated )
-VALUES('Lokaverkefni 2022', 'lokaverkefni-20222','2022-01-1', '2022-01-01');
+INSERT INTO events (name,slug,description,created,updated )
+VALUES('Lokaverkefni 2022', 'lokaverkefni-20222','Lokaverkefni, áfangi með stærra verkefni','2022-01-1', '2022-01-01');
 
 
 INSERT INTO registration (name, comment, event, created)

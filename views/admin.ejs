@@ -1,11 +1,13 @@
 <%- include('header') -%>
 
 <p>
+  Viðburðir
   <%
   for(var i = 0 ; i < list.length ; i++) { %>
   <ul>
     <li><a href= /admin/events/?slug=<%= list[i].slug %>&id=<%= list[i].id %>><%= list[i].name %></a></li>
   </ul>
 <% } %></p>
+Skrá nýjan viðburð
 <%- include('adminCreateEventForm') -%>
 <%- include('footer') -%>

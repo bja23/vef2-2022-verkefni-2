@@ -29,7 +29,7 @@ try {
 
     const query = {
       // give the query a unique name
-      text: 'SELECT name FROM registration WHERE event = $1',
+      text: 'SELECT name, comment FROM registration WHERE event = $1',
       values: [number],
     }
 
@@ -68,7 +68,7 @@ try {
 
 try {
 
-  let result = await client.query('SELECT name,slug,id FROM events');
+  let result = await client.query('SELECT name,slug,id, description FROM events');
 
   if (number === 1){
     const query = {

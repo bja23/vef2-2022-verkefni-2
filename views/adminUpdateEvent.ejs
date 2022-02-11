@@ -1,22 +1,24 @@
 <%- include('header') -%>
-
+Breyta viðburði
 <p>
   <%
   for(var i = 0 ; i < list.length ; i++) { %>
   <ul>
     <li><%= list[i].name%></li>
     <li><%= list[i].slug%></li>
-    <li><%= list[i].descripion%></li>
+    <li><%= list[i].description%></li>
     <li><%= list[i].created%></li>
     <li><%= list[i].updated%></li>
   </ul>
+  Eftirfarandi eru skráðir
   <p>
     <%
     for(var i = 0 ; i < list3.length ; i++) { %>
     <ul>
-      <li><%= list3[i].name %></li>
+      <li><%= list3[i].name %>, <%= list3[i].comment %></li>
     </ul>
   <% } %></p>
 <% } %></p>
+Breyta nafni og lýsingu:
 <%- include('adminUpdateEventForm') -%>
 <%- include('footer') -%>
