@@ -189,6 +189,11 @@ app.get('/', async (req, res) => {
   console.info('request to /');
 
   const list = await selectSQL(nodeEnv,connectionString,0,'test');
+
+  if(!list[0].id == 1){
+    return res.send('404');
+  };
+
   res.render('index',{
     title: 'heimasida',
     list: list
@@ -273,6 +278,10 @@ app.get('/admin', ensureLoggedIn,
   async (req, res) => {
 
     const list = await selectSQL(nodeEnv,connectionString,0,'test');
+
+    if(!list[0].id == 1){
+      return res.send('404');
+    };
 
     res.render('admin',{
       title: 'admin',
