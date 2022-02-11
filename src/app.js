@@ -12,6 +12,7 @@ import { insertSQL } from "./insert.js";
 import { comparePasswords, findById, findByUsername } from './lib/users.js';
 import { createEvent, updateEventName } from './lib/db.js';
 import { ensureLoggedIn } from './routes/admin-routes.js';
+import xss from 'xss';
 
 dotenv.config();
 
@@ -91,6 +92,98 @@ passport.deserializeUser(async (id, done) => {
 app.use(passport.initialize());
 app.use(passport.session());
 
+const validation = [
+  body('name')
+  .isLength({ min: 1, max: 64 })
+  .withMessage('Nafn má ekki vera tómt'),
+  body('comment')
+  .isLength({ max: 254 })
+  .withMessage('Athugasemnd má ekki vera lengri en 254 stafir'),
+];
+
+const sanitazion = [
+  body('name').trim().escape(),
+  body('name').customSanitizer((value) => xss(value)),
+  body('comment').customSanitizer((value) => xss(value)),
+];
+
+const validationResults = async (req, res, next) => {
+  const { name = '' } = req.body;
+
+  const result = validationResult(req);
+
+  const list = await selectSQL(nodeEnv,connectionString,1,req.body.id);
+  const list3 = await selectSQLr(nodeEnv,connectionString,req.body.id,req.body.name);
+  if (!result.isEmpty()) {
+    // const errorMessages = errors.array().map((i) => i.msg);
+    return res.render('event', {
+      title: 'Skrá í event',
+      errors: result.errors,
+      name: name,
+      list: list,
+      list3: list3
+    });
+  }
+
+  return next();
+};
+
+const validationResultsAdminEvent = async (req, res, next) => {
+  const { name = '' } = req.body;
+
+  const result = validationResult(req);
+
+  const list = await selectSQL(nodeEnv,connectionString,0,'test');
+
+
+  if (!result.isEmpty()) {
+    return res.render('admin',{
+      title: 'admin',
+      errors: result.errors,
+      name: name,
+      list: list,
+  });
+}
+  return next();
+};
+
+const validationResultsAdminEventUpdate = async (req, res, next) => {
+  const { name = '' } = req.body;
+
+  const result = validationResult(req);
+  console.log(req.body.id, req.body.name);
+
+  const list = await selectSQL(nodeEnv,connectionString,1,req.body.id);
+  const list3 = await selectSQLr(nodeEnv,connectionString,req.body.id,req.body.name);
+
+
+  if (!result.isEmpty()) {
+    console.log("testste");
+    return res.render('adminUpdateEvent',{
+      title: 'admin',
+      errors: result.errors,
+      name: name,
+      list: list,
+      list3: list3
+  });
+}
+  return next();
+};
+/**
+ * Hjálparfall til að athuga hvort reitur sé gildur eða ekki.
+ *
+ * @param {string} field Heiti á reit í formi
+ * @param {array} errors Fylki af villum frá express-validator pakkanum
+ * @returns {boolean} `true` ef `field` er í `errors`, `false` annars
+ */
+ function isInvalid(field, errors = []) {
+  // Boolean skilar `true` ef gildi er truthy (eitthvað fannst)
+  // eða `false` ef gildi er falsy (ekkert fannst: null)
+  return Boolean(errors.find((i) => i && i.param === field));
+}
+
+app.locals.isInvalid = isInvalid;
+
 app.get('/', async (req, res) => {
 
   console.info('request to /');
@@ -108,13 +201,16 @@ app.get('/events', async (req, res) => {
 
   res.render('event',{
     title: 'þarfadbreyta',
+    errors: [],
+    name: '',
     list: list,
     list3: list3
   });
 });
 
 
-app.post('/events', async (req, res) => {
+
+export const postEvent =  async (req, res) => {
   // fa inn fra form
   const data = req.body;
 
@@ -122,19 +218,21 @@ app.post('/events', async (req, res) => {
   const list2 = await insertSQL(nodeEnv,connectionString,data.id,data.name);
 
 
-  // kalla a db
-
-  // render með nyju info
-
   const list = await selectSQL(nodeEnv,connectionString,1,data.id);
   const list3 = await selectSQLr(nodeEnv,connectionString,data.id,data.name);
+  const name = data.name;
 
   res.render('event',{
-    title: 'þarfadbreyta',
+    title: 'Skrá í event',
+    errors: [],
+    name: name,
     list: list,
     list3: list3
   });
-});
+};
+
+app.post('/events', validation, validationResults, sanitazion, postEvent);
+
 
 app.get('/admin/login', (req, res) => {
   if (req.isAuthenticated()) {
@@ -166,39 +264,30 @@ app.post('/login',
     failureRedirect: '/login',
   }),
   async (req, res) => {
-
-    const list = await selectSQL(nodeEnv,connectionString,0,'test');
-    console.log(list);
-
-    res.render('admin',{
-      title: 'admin',
-      list: list,
-    });
+    res.redirect('/admin');
   }
 );
 
 
-app.get('/admin',
-  passport.authenticate('local', {
-    failureMessage: 'Notandanafn eða lykilorð vitlaust.',
-    failureRedirect: '/admin/login',
-  }),
+app.get('/admin', ensureLoggedIn,
   async (req, res) => {
 
     const list = await selectSQL(nodeEnv,connectionString,0,'test');
 
     res.render('admin',{
       title: 'admin',
+      errors: [],
+      name: '',
       list: list,
     });
   }
 );
 
-app.post('/admin', ensureLoggedIn,
+app.post('/admin', ensureLoggedIn, validation, validationResultsAdminEvent, sanitazion,
 
   async (req, res) => {
     const name = req.body.name;
-    const description = req.body.description;
+    const description = req.body.comment;
     console.log("info: ", name, description);
 
     const inst = await createEvent(name, description);
@@ -207,6 +296,8 @@ app.post('/admin', ensureLoggedIn,
 
     res.render('admin',{
       title: 'admin',
+      errors: [],
+      name: '',
       list: list,
     });
   });
@@ -218,12 +309,16 @@ app.post('/admin', ensureLoggedIn,
 
     res.render('adminUpdateEvent',{
       title: 'þarfadbreyta',
+      errors: [],
+      name: '',
       list: list,
       list3: list3
     });
   });
 
-  app.post('/admin/event', async (req, res) => {
+  app.post('/admin/event',
+   ensureLoggedIn, validation, validationResultsAdminEventUpdate,
+    sanitazion, async (req, res) => {
     // fa inn fra form
     const data = req.body;
     // insert into db
@@ -235,9 +330,16 @@ app.post('/admin', ensureLoggedIn,
 
     res.render('adminUpdateEvent',{
       title: 'þarfadbreyta',
+      errors: [],
+      name: '',
       list: list,
       list3: list3
     });
+  });
+
+  app.get('/logout', (req, res) => {
+    req.logout();
+    res.redirect('/');
   });
 
 

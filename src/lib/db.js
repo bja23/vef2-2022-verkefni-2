@@ -45,13 +45,25 @@ export async function end() {
 }
 
 export async function createEvent(name, description ) {
+
+  let slug2 = [];
+
+  for(let i = 0; i< name.length; i++){
+    const ch = name[i].toLowerCase();
+    const char = ch.replace(' ','-').replace('ð','d').replace('þ','th').replace('ö','o')
+    .replace('á','a').replace('é','e').replace('í','i').replace('ó','o').replace('ú','u')
+    .replace('ý','y').replace('æ','ae');
+    slug2.push(char);
+  }
+
+  const slug = slug2.join('');
   const q = `
     INSERT INTO
       events(name, slug, description, created, updated)
     VALUES
       ($1, $2, $3, $4, $5)
     RETURNING *`;
-  const values = [name, name, description, new Date(), new Date()];
+  const values = [name, slug, description, new Date(), new Date()];
   console.log(values);
 
   const result = await query(q, values);
@@ -61,10 +73,21 @@ export async function createEvent(name, description ) {
 
 
 export async function updateEventName(name,description,id) {
+  let slug2 = [];
+
+  for(let i = 0; i< name.length; i++){
+    const ch = name[i].toLowerCase();
+    const char = ch.replace(' ','-').replace('ð','d').replace('þ','th').replace('ö','o')
+    .replace('á','a').replace('é','e').replace('í','i').replace('ó','o').replace('ú','u')
+    .replace('ý','y').replace('æ','ae');
+    slug2.push(char);
+  }
+
+  const slug = slug2.join('');
   const q = `UPDATE
               events
-            SET name = $1, description = $2, updated = $3 WHERE id = $4`;
-  const values = [name, description, new Date(), id];
+            SET name = $1, slug = $2, description = $3, updated = $4 WHERE id = $5`;
+  const values = [name,slug,description, new Date(), id];
 
   const result = await query(q, values);
 

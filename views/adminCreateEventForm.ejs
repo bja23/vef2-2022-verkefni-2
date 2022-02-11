@@ -1,11 +1,25 @@
 <form method="post" action="/admin" enctype="application/x-www-form-urlencoded" class="form form--separated">
-  <label>
-    Name:
-    <input type="text" name="name">
-  </label>
-  <label>
-    description:
-    <input type="text" name="description">
-  </label>
+  <div class="field<%= locals.isInvalid('name', errors) ?  ' field--invalid' : '' %>">
+    <label for="name">Nafn*</label>
+    <input type="text" name="name" id="name" value="<%= name %>" class="">
+  </div>
+
+  <div class="field field--textarea<%= locals.isInvalid('comment', errors) ?  ' field--invalid' : '' %>">
+    <label for="comment">Lýsing:</label>
+    <textarea name="comment" id="comment"></textarea>
+  </div>
+
+  <% if (errors.length > 0) { %>
+    <h2 class="errors__title">Villur við skráningu:</h2>
+    <ul class="errors">
+      <% errors.forEach((error) => { %>
+      <li class="error"><label for="<%= error.param %>"><%= error.msg %></label></li>
+      <% }); %>
+    </ul>
+    <% } %>
+
+    <input type="hidden" id="custId" name="id" value=<%= list[0].id %>>
+  <input type="hidden" id="custId2" name="slug" value=<%= list[0].slug %>>
+
   <button>Senda</button>
 </form>

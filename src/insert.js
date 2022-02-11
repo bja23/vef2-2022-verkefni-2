@@ -28,6 +28,7 @@ try {
 
 try {
 
+
   const query = `INSERT INTO registration (name,comment,event,created )
   VALUES($2, 'test3-event',$1,'2017-05-01')`;
   const values = [number,sqlname];
