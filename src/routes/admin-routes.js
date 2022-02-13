@@ -13,5 +13,5 @@ export function ensureLoggedIn(req, res, next) {
 
 router.get('/', ensureLoggedIn, async (req, res) => {
 
-  res.render('admin', { title: 'admin svæði', comments });
+  res.render('admin', { title: 'admin svæði' });
 });
