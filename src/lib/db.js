@@ -1,7 +1,13 @@
+import { readFile } from 'fs/promises';
 import dotenv from 'dotenv';
 import pg from 'pg';
 
+const SCHEMA_FILE = './sql/schema.sql';
+const DROP_SCHEMA_FILE = './sql/drop.sql';
+
 dotenv.config();
+
+
 
 const { DATABASE_URL: connectionString, NODE_ENV: nodeEnv = 'development' } =
   process.env;
@@ -40,13 +46,29 @@ export async function query(q, values = []) {
   }
 }
 
+export async function createSchema(schemaFile = SCHEMA_FILE) {
+  const data = await readFile(schemaFile);
+
+  return query(data.toString('utf-8'));
+}
+
+export async function dropSchema(dropFile = DROP_SCHEMA_FILE) {
+  const data = await readFile(dropFile);
+
+  return query(data.toString('utf-8'));
+}
+
 export async function end() {
   await pool.end();
 }
 
 export async function createEvent(name, description) {
+  if(name === ''){
+    return null;
+  }
   const slug2 = [];
 
+   // eslint-disable-next-line no-plusplus
   for (let i = 0; i < name.length; i++) {
     const ch = name[i].toLowerCase();
     const char = ch
@@ -81,6 +103,7 @@ export async function createEvent(name, description) {
 export async function updateEventName(name, description, id) {
   const slug2 = [];
 
+  // eslint-disable-next-line no-plusplus
   for (let i = 0; i < name.length; i++) {
     const ch = name[i].toLowerCase();
     const char = ch
@@ -127,6 +150,28 @@ export async function insertSQL( number, sqlname,comment) {
 
   return [];
 }
+ // eslint-disable-next-line no-unused-vars
+export async function selectSQL0( sqlname) {
+
+
+  const q = 'SELECT name,slug,id, description FROM events';
+  const result = await query(q, []);
+
+  const list = result.rows;
+
+  return list;
+}
+
+export async function selectSQL1(sqlname) {
+
+  const q = 'SELECT * FROM events WHERE id = $1';
+  const values =  [sqlname];
+
+  const result = await query(q, values);
+  const list = result.rows;
+
+  return list;
+}
 
 export async function selectSQL( number, sqlname) {
 
@@ -141,31 +186,11 @@ export async function selectSQL( number, sqlname) {
   return result2;
 }
 
-export async function selectSQL0( sqlname) {
 
-  const q = "SELECT name,slug,id, description FROM events";
-  const result = await query(q, []);
-
-  let list = result.rows;
-
-  return list;
-}
-
-export async function selectSQL1(sqlname) {
-
-  const q = "SELECT * FROM events WHERE id = $1";
-  const values =  [sqlname];
-
-  const result = await query(q, values);
-  let list = result.rows;
-
-  return list;
-}
-
-
+  // eslint-disable-next-line no-unused-vars
 export async function selectSQLr(number, num) {
 
-  const q = "SELECT name, comment FROM registration WHERE event = $1";
+  const q = 'SELECT name, comment FROM registration WHERE event = $1';
   const values = [number];
 
   const result = await query(q, values);

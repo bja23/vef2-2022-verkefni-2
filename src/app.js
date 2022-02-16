@@ -88,7 +88,7 @@ passport.deserializeUser(async (id, done) => {
 app.use(passport.initialize());
 app.use(passport.session());
 
-const validation = [
+export const validation = [
   body("name")
     .isLength({ min: 1, max: 64 })
     .withMessage("Nafn má ekki vera tómt"),
@@ -97,13 +97,13 @@ const validation = [
     .withMessage("Athugasemnd má ekki vera lengri en 254 stafir"),
 ];
 
-const sanitazion = [
+export const sanitazion = [
   body("name").trim().escape(),
   body("name").customSanitizer((value) => xss(value)),
   body("comment").customSanitizer((value) => xss(value)),
 ];
 
-const validationResults = async (req, res, next) => {
+export const validationResults = async (req, res, next) => {
   const { name = "" } = req.body;
 
   const result = validationResult(req);

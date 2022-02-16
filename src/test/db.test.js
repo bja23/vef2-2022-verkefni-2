@@ -4,6 +4,7 @@ import {
   createSchema,
   dropSchema,
   end,
+  createEvent,
 } from '../lib/db';
 
 /**
@@ -22,7 +23,13 @@ describe('db', () => {
     await end();
   });
 
-  it('creates a valid event and returns it', async () => {
-    // TODO útfæra test
+  it('empty string should return null', async () => {
+    const result = await createEvent('','');
+    expect(result).toBe(null);
+  });
+
+  it('should be exepted and return true', async () => {
+    const result = await createEvent('Hugbúnaðarverkefni 1','');
+    expect(result).toBe(true);
   });
 });
